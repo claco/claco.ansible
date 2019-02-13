@@ -1,0 +1,7 @@
+---
+# molecule file for claco.erase_disk
+
+- name: Converge
+  hosts: all
+  roles:
+    - role: claco.erase_disk

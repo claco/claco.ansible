@@ -1,0 +1,82 @@
+---
+# tasks file for claco.teamcity_server
+
+- name: Include Operating System Variables
+  include_vars: "{{ item }}"
+  with_first_found:
+    - files:
+        - "{{ ansible_distribution | lower }}-{{ ansible_distribution_version | lower }}.yml"
+        - "{{ ansible_distribution | lower }}-{{ ansible_distribution_major_version | lower }}.yml"
+        - "{{ ansible_os_family | lower }}-{{ ansible_distribution_major_version | lower }}.yml"
+        - "{{ ansible_distribution | lower }}.yml"
+        - "{{ ansible_os_family | lower }}.yml"
+        - "{{ ansible_system | lower }}.yml"
+        - "main.yml"
+      paths:
+        - "{{ role_path }}/vars"
+
+- name: Include Operating System Specific Tasks
+  include_tasks: "{{ item }}"
+  with_first_found:
+    - files:
+        - "{{ ansible_distribution | lower }}-{{ ansible_distribution_version | lower }}.yml"
+        - "{{ ansible_distribution | lower }}-{{ ansible_distribution_major_version | lower }}.yml"
+        - "{{ ansible_os_family | lower }}-{{ ansible_distribution_major_version | lower }}.yml"
+        - "{{ ansible_distribution | lower }}.yml"
+        - "{{ ansible_os_family | lower }}.yml"
+        - "{{ ansible_system | lower }}.yml"
+      paths:
+        - "{{ role_path }}/tasks"
+
+- name: Create TeamCity Server Directory {{ teamcity_server_directory }}
+  become: true
+  file:
+    path: "{{ teamcity_server_directory }}"
+    owner: "root"
+    group: "root"
+    mode: "0755"
+    state: directory
+
+- name: Create TeamCity Server Plugins Directory {{ teamcity_server_plugins_directory }}
+  become: true
+  file:
+    path: "{{ teamcity_server_plugins_directory }}"
+    owner: "root"
+    group: "root"
+    mode: "0755"
+    state: directory
+
+- name: Install TeamCity Server Plugins
+  become: true
+  get_url:
+    url: "{{ item.url }}"
+    dest: "{{ item.dest }}"
+    checksum: "{{ item.checksum }}"
+  loop: "{{ teamcity_server_plugins }}"
+
+- name: Pull TeamCity Server Docker Image {{ teamcity_server_image }}
+  docker_image:
+    name: "{{ teamcity_server_image }}"
+    state: present
+
+- name: Create TeamCity Server Network {{ teamcity_server_network }}
+  docker_network:
+    name: "{{ teamcity_server_network }}"
+    state: present
+
+- name: Start TeamCity Server Docker Container
+  docker_container:
+    name: "teamcity-server"
+    image: "{{ teamcity_server_image }}"
+    auto_remove: true
+    hostname: "teamcity-server"
+    purge_networks: true
+    networks_cli_compatible: true
+    networks:
+      - name: "{{ teamcity_server_network }}"
+    ports:
+      - "{{ teamcity_server_port }}:8111"
+    volumes:
+      - "{{ teamcity_server_data_directory }}:/data/teamcity_server/datadir"
+      - "{{ teamcity_server_logs_directory }}:/opt/teamcity/logs"
+    state: started

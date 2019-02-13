@@ -1,0 +1,89 @@
+---
+# tasks file for claco.raspbian
+
+- name: Include Operating System Specific Variables
+  include_vars: "{{ item }}"
+  with_first_found:
+    - files:
+        - "{{ ansible_distribution | lower }}-{{ ansible_distribution_version | lower }}.yml"
+        - "{{ ansible_distribution | lower }}-{{ ansible_distribution_major_version | lower }}.yml"
+        - "{{ ansible_os_family | lower }}-{{ ansible_distribution_major_version | lower }}.yml"
+        - "{{ ansible_system | lower }}-{{ ansible_distribution_version | lower }}.yml"
+        - "{{ ansible_distribution | lower }}.yml"
+        - "{{ ansible_os_family | lower }}.yml"
+        - "{{ ansible_system | lower }}.yml"
+        - "main.yml"
+      paths:
+        - "{{ role_path }}/vars"
+
+- name: Install/Update Required Packages
+  package:
+    name: "{{ item.name }}{% if item.version != 'latest' %}={{ item.version }}{% endif %}"
+    state: "{% if item.version == 'latest' %}latest{% else %}present{% endif %}"
+  loop: "{{ raspbian_required_packages }}"
+
+- name: Download Raspbian Disk Image {{ raspbian_download_file }}
+  get_url:
+    url: "{{ raspbian_download_url }}"
+    dest: "{{ raspbian_download_dest }}"
+    checksum: "sha256:{{ raspbian_download_checksum }}"
+  register: raspbian_download
+
+- name: Unarchive Raspbian Disk Image {{ raspbian_download_image }}
+  unarchive:
+    src: "{{ raspbian_download_dest }}"
+    dest: "{{ raspbian_download_folder }}"
+    remote_src: true
+  register: raspbian_unarchive
+  when: raspbian_download is changed
+
+- name: Include Operating System Specific Tasks
+  include_tasks: "{{ item }}"
+  with_first_found:
+    - files:
+        - "{{ ansible_distribution | lower }}-{{ ansible_distribution_version | lower }}.yml"
+        - "{{ ansible_distribution | lower }}-{{ ansible_distribution_major_version | lower }}.yml"
+        - "{{ ansible_os_family | lower }}-{{ ansible_distribution_major_version | lower }}.yml"
+        - "{{ ansible_system | lower }}-{{ ansible_distribution_version | lower }}.yml"
+        - "{{ ansible_distribution | lower }}.yml"
+        - "{{ ansible_os_family | lower }}.yml"
+        - "{{ ansible_system | lower }}.yml"
+      paths:
+        - "{{ role_path }}/tasks"
+
+- name: Unmount Raspbian Boot Device
+  mount:
+    path: "{{ raspbian_boot_device }}"
+    state: unmounted
+
+- name: Read Raspbian Boot Device Partitions
+  parted:
+    device: "{{ raspbian_boot_device }}"
+    unit: GiB
+  register: raspbian_boot_device_info
+
+- name: Unmount Raspbian Boot Device Partitions
+  command: "umount -f {{ raspbian_boot_device }}p{{ item.num }}"  # noqa 301
+  ignore_errors: true
+  loop: "{{ raspbian_boot_device_info.partitions }}"
+
+- name: Copy Raspbian Image to Boot Device
+  command: "dd if={{ raspbian_download_folder }}/{{ raspbian_download_image }} of={{ raspbian_boot_device }} bs=512k"  # noqa 301
+
+- name: Unmount Raspbian Data Device
+  mount:
+    path: "{{ raspbian_data_device }}"
+    state: unmounted
+
+# - name: Read Raspbian Data Device Partitions
+#   parted:
+#     device: "{{ raspbian_data_device }}"
+#     unit: GiB
+#   register: raspbian_data_device_info
+#
+# - name: Remove All Data Device Partitions
+#   parted:
+#     device: "{{ raspbian_data_device }}"
+#     number: '{{ item.num }}'
+#     state: absent
+#   loop: "{{ raspbian_data_device_info.partitions }}"

@@ -1,0 +1,7 @@
+---
+# tests file for claco.ansible_lint
+
+- hosts: localhost
+  remote_user: root
+  roles:
+    - claco.ansible_lint

@@ -1,0 +1,10 @@
+---
+# molecule file for claco.teamcity_server
+
+- name: Converge
+  hosts: all
+  roles:
+    - role: claco.teamcity_server
+      vars:
+        teamcity_server_directory: "/data/teamcity_server"
+        teamcity_server_network: "molecule"

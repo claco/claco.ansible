@@ -1,0 +1,20 @@
+---
+# playbook to install repository linting requirements
+
+- name: Install Repository Linting Requirements
+  hosts: localhost
+  roles:
+    - role: claco.ansible_lint
+      tags: ansible-lint
+
+    - role: claco.gitlint
+      tags: gitlint
+
+    - role: claco.pre_commit
+      tags: pre-commit
+
+    - role: claco.pylama
+      tags: pylama
+
+    - role: claco.yamllint
+      tags: yamllint

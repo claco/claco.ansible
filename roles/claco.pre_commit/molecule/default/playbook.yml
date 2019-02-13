@@ -1,0 +1,8 @@
+---
+# molecule file for claco.pre_commit
+
+- name: Converge
+  hosts: all
+  roles:
+    - role: claco.pre_commit
+      pre_commit_virtualenv: "~/.venv"

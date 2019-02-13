@@ -1,0 +1,8 @@
+---
+# defaults file for claco.go_cve_dictionary
+
+go_cve_dictionary_binary: "{{ go_bin_path }}/go-cve-dictionary"
+go_cve_dictionary_destination: "{{ go_src_path }}/github.com/kotakanbe/{{ go_cve_dictionary_package }}"
+go_cve_dictionary_package: "go-cve-dictionary"
+go_cve_dictionary_repository: "https://github.com/kotakanbe/{{ go_cve_dictionary_package }}.git"
+go_cve_dictionary_version: "0.3.1"

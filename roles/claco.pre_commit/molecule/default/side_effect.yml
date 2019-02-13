@@ -1,0 +1,5 @@
+---
+# molecule file for claco.pre_commit
+
+- name: Side Effects
+  hosts: all

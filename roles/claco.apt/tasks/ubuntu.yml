@@ -1,0 +1,37 @@
+---
+# tasks file for claco.apt
+
+- name: Install Aptitude
+  apt:
+    name: aptitude
+    state: latest  # noqa 403
+    force_apt_get: true
+  when: apt_use_aptitude
+
+- name: Update Repositories
+  apt:
+    cache_valid_time: "{{ apt_cache_valid_time }}"
+    force_apt_get: "{{ apt_force_apt_get }}"
+    update_cache: true
+  tags: apt-update
+
+- name: Upgrade Installed Packages
+  apt:
+    force_apt_get: "{{ apt_force_apt_get }}"
+    upgrade: dist
+  tags: apt-dist-upgrade
+
+- name: Clean/Remove Unnecessary Files
+  apt:
+    autoclean: true
+    autoremove: true
+    force_apt_get: "{{ apt_force_apt_get }}"
+  tags: apt-clean
+
+- name: Reboot To Complete Upgrades
+  reboot:
+    msg: "Rebooting system to complete upgrades"
+  when: apt_reboot
+  tags:
+    - apt-reboot
+    - skip_ansible_lint  # See https://github.com/ansible/ansible-lint/issues/396

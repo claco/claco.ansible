@@ -1,0 +1,8 @@
+---
+# defaults file for claco.go
+
+go_bin_path: "{{ go_path }}/bin"
+go_package_name: "golang"
+go_package_version: "latest"
+go_path: "{{ ansible_env.HOME }}/go"
+go_src_path: "{{ go_path }}/src"

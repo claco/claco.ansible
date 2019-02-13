@@ -1,0 +1,9 @@
+---
+# defaults file for claco.add_disk
+
+add_disk_device:
+add_disk_fstype:
+add_disk_label:
+add_disk_mount:
+add_disk_partition: "{{ add_disk_device }}{{ add_disk_partition_number }}"
+add_disk_partition_number: 1

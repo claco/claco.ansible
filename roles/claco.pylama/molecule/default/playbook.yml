@@ -1,0 +1,8 @@
+---
+# molecule file for claco.pylama
+
+- name: Converge
+  hosts: all
+  roles:
+    - role: claco.pylama
+      pylama_virtualenv: "~/.venv"

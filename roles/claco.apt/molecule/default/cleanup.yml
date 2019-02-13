@@ -1,0 +1,5 @@
+---
+# molecule file for claco.apt
+
+- name: Cleanup
+  hosts: all

@@ -1,0 +1,64 @@
+---
+# tasks file for claco.docker_registry
+
+- name: Include Operating System Variables
+  include_vars: "{{ item }}"
+  with_first_found:
+    - files:
+        - "{{ ansible_distribution | lower }}-{{ ansible_distribution_version | lower }}.yml"
+        - "{{ ansible_distribution | lower }}-{{ ansible_distribution_major_version | lower }}.yml"
+        - "{{ ansible_os_family | lower }}-{{ ansible_distribution_major_version | lower }}.yml"
+        - "{{ ansible_system | lower }}-{{ ansible_distribution_version | lower }}.yml"
+        - "{{ ansible_distribution | lower }}.yml"
+        - "{{ ansible_os_family | lower }}.yml"
+        - "{{ ansible_system | lower }}.yml"
+        - "main.yml"
+      paths:
+        - "{{ role_path }}/vars"
+
+- name: Include Operating System Specific Tasks
+  include_tasks: "{{ item }}"
+  with_first_found:
+    - files:
+        - "{{ ansible_distribution | lower }}-{{ ansible_distribution_version | lower }}.yml"
+        - "{{ ansible_distribution | lower }}-{{ ansible_distribution_major_version | lower }}.yml"
+        - "{{ ansible_os_family | lower }}-{{ ansible_distribution_major_version | lower }}.yml"
+        - "{{ ansible_system | lower }}-{{ ansible_distribution_version | lower }}.yml"
+        - "{{ ansible_distribution | lower }}.yml"
+        - "{{ ansible_os_family | lower }}.yml"
+        - "{{ ansible_system | lower }}.yml"
+      paths:
+        - "{{ role_path }}/tasks"
+
+- name: Create Docker Registry Data Directory {{ docker_registry_data_directory }}
+  file:
+    path: "{{ docker_registry_data_directory }}"
+    mode: "0755"
+    state: directory
+
+- name: Pull Docker Registery Image {{ docker_registry_image }}
+  docker_image:
+    name: "{{ docker_registry_image }}"
+    source: pull
+    state: present
+
+- name: Create Docker Registry Network {{ docker_registry_network }}
+  docker_network:
+    name: "{{ docker_registry_network }}"
+    state: present
+
+- name: Start Docker Registry Container
+  docker_container:
+    name: "docker-registry"
+    image: "{{ docker_registry_image }}"
+    auto_remove: true
+    hostname: "docker-registry"
+    purge_networks: true
+    networks_cli_compatible: true
+    networks:
+      - name: "{{ docker_registry_network }}"
+    ports:
+      - "{{ docker_registry_port }}:5000"
+    volumes:
+      - "{{ docker_registry_data_directory }}:/var/lib/registry"
+    state: started

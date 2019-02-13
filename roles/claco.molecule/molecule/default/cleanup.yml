@@ -1,0 +1,5 @@
+---
+# molecule file for claco.molecule
+
+- name: Cleanup
+  hosts: all

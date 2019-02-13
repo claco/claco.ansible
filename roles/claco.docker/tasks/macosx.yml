@@ -1,0 +1,7 @@
+---
+# tasks file for claco.docker
+
+- name: Install/Update Package {{ docker_package_name }}:{{ docker_package_version }}
+  package:
+    name: "{{ docker_package_name }}{% if docker_package_version != 'latest' %}={{ docker_package_version }}{% endif %}"
+    state: "{% if docker_package_version == 'latest' %}latest{% else %}present{% endif %}"

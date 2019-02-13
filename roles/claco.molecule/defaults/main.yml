@@ -1,0 +1,7 @@
+---
+# defaults file for claco.molecule
+
+molecule_package_name: "molecule"
+molecule_package_version: "latest"
+
+molecule_virtualenv: "{{ pip_virtualenv }}"

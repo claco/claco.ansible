@@ -1,0 +1,8 @@
+---
+# molecule file for {{ role_name.split('/') | last }}
+
+- name: Converge
+  hosts: all
+  roles:
+    - role: {{ role_name.split('/') | last }}
+

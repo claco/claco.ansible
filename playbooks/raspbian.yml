@@ -1,0 +1,34 @@
+---
+# playbook to configure raspberry pi disk devices
+
+- name: Configure Raspbian Disk Devices
+  hosts: localhost
+  become: true
+  gather_facts: true
+  roles:
+    - name: claco.erase_disk
+      vars:
+        erase_disk_device: /dev/mmcblk0
+
+    - name: claco.erase_disk
+      vars:
+        erase_disk_device: /dev/sdc
+
+    - name: claco.erase_disk
+      vars:
+        erase_disk_device: /dev/sdd
+
+    - name: claco.partition_disk
+      vars:
+        partition_disk_device: /dev/sdc
+        partition_disk_name: data
+
+    - name: claco.partition_disk
+      vars:
+        partition_disk_device: /dev/sdd
+        partition_disk_name: gluster
+
+    - name: claco.raspbian
+      vars:
+        raspbian_boot_device: /dev/mmcblk0
+        raspbian_data_device: /dev/sdc

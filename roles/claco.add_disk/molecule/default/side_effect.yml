@@ -1,0 +1,5 @@
+---
+# molecule file for claco.add_disk
+
+- name: Side Effects
+  hosts: all

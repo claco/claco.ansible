@@ -1,0 +1,10 @@
+---
+# defaults file for claco.teamcity_build_agent
+
+teamcity_build_agent_config_directory:
+teamcity_build_agent_image: "jetbrains/teamcity-agent:latest"
+teamcity_build_agent_name: "teamcity-build-agent-{{ teamcity_build_agent_number }}"
+teamcity_build_agent_network: "{{ build_network_name }}"
+teamcity_build_agent_number:
+teamcity_build_agent_port: 9090
+teamcity_build_agent_server_url: "http://teamcity-server:8111"

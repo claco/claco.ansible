@@ -1,0 +1,36 @@
+{
+  "variables": {
+    "distro": "",
+    "version": ""
+  },
+  "provisioners": [
+    {
+      "type": "ansible",
+      "playbook_file": "./ansible/playbook.yml"
+    }
+  ], 
+  "builders": [
+    {
+      "type": "docker",
+      "image": "{{ user `distro` }}:{{ user `version` }}", 
+      "commit": true
+    }
+  ],
+  "post-processors": [
+    [
+      {
+        "type": "docker-tag",
+        "repository": "molecule-{{ user `distro` }}",
+        "tag": "{{ user `version` }}"
+      },
+      {
+        "type": "shell-local",
+        "inline": ["docker image rm --force {{ user `distro` }}:{{ user `version` }}"]
+      },
+      {
+        "type": "shell-local",
+        "inline": ["docker image prune --force"]
+      }
+    ]
+  ]
+}

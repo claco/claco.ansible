@@ -1,0 +1,5 @@
+---
+# molecule file for claco.format_disk
+
+- name: Cleanup
+  hosts: all

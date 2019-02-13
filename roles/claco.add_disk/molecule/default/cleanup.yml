@@ -1,0 +1,15 @@
+---
+# molecule file for claco.add_disk
+
+- name: Cleanup
+  hosts: all
+  tasks:
+    - name: Detach Virtual File System from Loopback
+      command: losetup -d /dev/loop0  # noqa 301
+      args:
+        warn: false
+
+    - name: Remove Loopback Partition
+      command: rm -f /dev/loop0p1  # noqa 301
+      args:
+        warn: false

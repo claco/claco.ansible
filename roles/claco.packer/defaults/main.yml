@@ -1,0 +1,13 @@
+---
+# defaults file for claco.packer
+
+packer_binary_path: "/usr/local/bin"
+packer_download_checksum:
+packer_download_filename: "{{ packer_package_name }}_{{ packer_package_version }}_{{ packer_package_platform }}.zip"
+packer_download_url: "https://releases.hashicorp.com/{{ packer_package_name }}/{{ packer_package_version }}/{{ packer_download_filename }}"
+packer_package_name: "packer"
+packer_package_platform:
+packer_package_version: "1.4.3"
+packer_required_packages:
+  - name: "unzip"
+    version: "latest"

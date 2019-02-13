@@ -1,0 +1,19 @@
+---
+# tasks file for claco.docker
+
+- name: Install/Update Package {{ docker_package_name }}:{{ docker_package_version }}
+  apt:
+    name: "{{ docker_package_name }}{% if docker_package_version != 'latest' %}={{ docker_package_version }}{% endif %}"
+    state: "{% if docker_package_version == 'latest' %}latest{% else %}present{% endif %}"
+    force_apt_get: "{{ apt_force_apt_get }}"
+
+- name: Add Ansible User to Docker Group
+  user:
+    name: "{{ ansible_env.SUDO_USER | default(ansible_user_id) }}"
+    groups: "docker"
+    append: true
+
+- name: Ensure Docker Service is Running
+  service:
+    name: "docker"
+    state: started

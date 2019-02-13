@@ -1,0 +1,22 @@
+---
+- repo: local
+  hooks:
+    - id: yamllint
+      name: yamllint
+      entry: yamllint
+      language: system
+      args: [ -c, .yamllint, --strict ]
+      files: '^(.yamllint|.ansible-lint|.*.ya?ml)$'
+
+    - id: ansible-lint
+      name: ansible-lint
+      entry: ansible-lint
+      language: system
+      args: [ -c, .ansible-lint, -R, -v ]
+      files: '\.(yaml|yml)$'
+      exclude: '.pre-commit-config.yaml'
+
+    - id: pylama
+      name: pylama
+      entry: pylama
+      language: system

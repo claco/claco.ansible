@@ -1,0 +1,7 @@
+---
+# tests file for claco.packer
+
+- hosts: localhost
+  remote_user: root
+  roles:
+    - claco.packer

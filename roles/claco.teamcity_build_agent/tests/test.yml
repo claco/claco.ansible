@@ -1,0 +1,7 @@
+---
+# tests file for claco.teamcity_build_agent
+
+- hosts: localhost
+  remote_user: root
+  roles:
+    - claco.teamcity_build_agent

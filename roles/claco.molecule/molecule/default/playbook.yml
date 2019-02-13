@@ -1,0 +1,8 @@
+---
+# molecule file for claco.molecule
+
+- name: Converge
+  hosts: all
+  roles:
+    - role: claco.molecule
+      molecule_virtualenv: "~/.venv"

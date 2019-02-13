@@ -1,0 +1,7 @@
+---
+# defaults file for claco.apt
+
+apt_cache_valid_time: 2400
+apt_force_apt_get: false
+apt_reboot: false
+apt_use_aptitude: false

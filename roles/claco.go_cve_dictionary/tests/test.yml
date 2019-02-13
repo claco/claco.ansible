@@ -1,0 +1,7 @@
+---
+# tests file for claco.go_cve_dictionary
+
+- hosts: localhost
+  remote_user: root
+  roles:
+    - claco.go_cve_dictionary

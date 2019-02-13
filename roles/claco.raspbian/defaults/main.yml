@@ -1,0 +1,14 @@
+---
+# defaults file for claco.raspbian
+
+raspbian_boot_device:
+raspbian_data_device:
+raspbian_download_folder:
+raspbian_download_checksum: "{{ raspbian_download_url }}.sha256"
+raspbian_download_dest: "{{ raspbian_download_folder }}/{{ raspbian_download_file }}"
+raspbian_download_file: "{{ raspbian_version }}-raspbian-buster-lite.zip"
+raspbian_download_image: "{{ raspbian_version }}-raspbian-buster-lite.img"
+raspbian_download_url: "https://downloads.raspberrypi.org/raspbian_lite/images/raspbian_lite-2020-02-14/{{ raspbian_download_file }}"
+raspbian_mount_point: ""
+raspbian_required_packages: []
+raspbian_version: "2020-02-13"

@@ -1,0 +1,50 @@
+---
+# Playbook to provision molecule images
+
+- name: Prepare Molecule Image for Ansible
+  hosts: all
+  gather_facts: false
+  tasks:
+    - name: Install Python
+      raw: DEBIAN_FRONTEND=noninteractive apt-get update && apt-get install -y python
+
+- name: Update/Upgrade Image
+  hosts: all
+  gather_facts: true
+  tasks:
+    - name: Upgrade Packages
+      apt:
+        autoclean: true
+        autoremove: true
+        force_apt_get: true
+        install_recommends: true
+        only_upgrade: true
+        update_cache: true
+        upgrade: true
+
+    - name: Install Required Packages
+      package:
+        name: "{{ item }}"
+        state: latest
+      loop:
+        - bash
+        - ca-certificates
+        - sudo
+
+- name: Clean Image
+  hosts: all
+  gather_facts: false
+  tasks:
+    - name: Empty Directories
+      file:
+        path: "{{ item }}"
+        state: absent
+      loop:
+        - "/var/lib/apt/"
+        - "/var/lib/dpkg/"
+        - "/var/lib/cache/"
+        - "/var/lib/log/"
+        - "/tmp/*"
+        - "/var/log/apt"
+        - "/var/apt/cache"
+        - "/var/lib/apt"

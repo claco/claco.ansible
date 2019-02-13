@@ -1,0 +1,25 @@
+---
+# molecule file for claco.add_disk
+
+- name: Prepare
+  hosts: all
+  tasks:
+    - name: Create Virtual File System
+      command: dd if=/dev/zero of=/virtualfs bs=1M count=30
+      args:
+        creates: /virtualfs
+        warn: false
+      register: virtualfs
+
+    - name: Create Loopback Device
+      command: mknod /dev/loop0 b 7 0
+      args:
+        creates: /dev/loop0
+        warn: false
+      when: virtualfs is changed
+
+    - name: Attach Virtual File System to Loopback
+      command: losetup /dev/loop0 /virtualfs
+      args:
+        warn: false
+      when: virtualfs is changed

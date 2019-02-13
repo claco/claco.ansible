@@ -1,0 +1,7 @@
+---
+# tasks file for claco.parted
+
+- name: Install/Update Package {{ parted_package_name }}:{{ parted_package_version }}
+  apt:
+    name: "{{ parted_package_name }}{% if parted_package_version != 'latest' %}={{ parted_package_version }}{% endif %}"
+    state: "{% if parted_package_version == 'latest' %}latest{% else %}present{% endif %}"

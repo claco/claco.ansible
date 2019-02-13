@@ -1,0 +1,5 @@
+---
+# molecule file for claco.git
+
+- name: Prepare
+  hosts: all

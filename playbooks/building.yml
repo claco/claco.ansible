@@ -1,0 +1,14 @@
+---
+# playbook to install repository image building requirements
+
+- name: Install Repository Image Building Requirements
+  hosts: localhost
+  roles:
+    - role: claco.packer
+      tags: packer
+
+    - role: claco.docker
+      tags: docker
+
+    - role: claco.docker_registry
+      tags: docker-registry

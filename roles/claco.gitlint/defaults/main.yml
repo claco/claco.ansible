@@ -1,0 +1,7 @@
+---
+# defaults file for claco.gitlint
+
+gitlint_package_name: "gitlint"
+gitlint_package_version: "latest"
+
+gitlint_virtualenv: "{{ pip_virtualenv }}"

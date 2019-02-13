@@ -1,0 +1,5 @@
+---
+# molecule file for claco.go_cve_dictionary
+
+- name: Prepare
+  hosts: all

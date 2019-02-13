@@ -1,0 +1,5 @@
+---
+# molecule file for claco.ansible_lint
+
+- name: Side Effects
+  hosts: all

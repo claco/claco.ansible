@@ -1,0 +1,6 @@
+---
+# defaults file for claco.ansible
+
+ansible_package_name: "ansible"
+ansible_package_version: "latest"
+ansible_virtualenv: "{{ pip_virtualenv }}"

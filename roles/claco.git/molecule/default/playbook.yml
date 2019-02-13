@@ -1,0 +1,7 @@
+---
+# molecule file for claco.git
+
+- name: Converge
+  hosts: all
+  roles:
+    - role: claco.git

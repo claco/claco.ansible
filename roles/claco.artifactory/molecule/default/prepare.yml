@@ -1,0 +1,5 @@
+---
+# molecule file for claco.artifactory
+
+- name: Prepare
+  hosts: all

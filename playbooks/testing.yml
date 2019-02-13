@@ -1,0 +1,8 @@
+---
+# playbook to install repository testing requirements
+
+- name: Install Repository Testing Requirements
+  hosts: localhost
+  roles:
+    - role: claco.molecule
+      tags: molecule

@@ -1,0 +1,6 @@
+---
+# defaults file for claco.ansible_lint
+
+ansible_lint_package_name: "ansible-lint"
+ansible_lint_package_version: "latest"
+ansible_lint_virtualenv: "{{ pip_virtualenv }}"

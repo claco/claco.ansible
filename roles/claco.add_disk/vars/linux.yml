@@ -1,0 +1,5 @@
+---
+# vars file for claco.add_disk
+
+add_disk_fstype: "ext4"
+add_disk_label: "gpt"

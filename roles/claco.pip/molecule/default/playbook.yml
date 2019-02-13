@@ -1,0 +1,8 @@
+---
+# molecule file for claco.pip
+
+- name: Converge
+  hosts: all
+  roles:
+    - role: claco.pip
+      pip_virtualenv: "~/.venv"

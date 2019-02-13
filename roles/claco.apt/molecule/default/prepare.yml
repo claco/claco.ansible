@@ -1,0 +1,5 @@
+---
+# molecule file for claco.apt
+
+- name: Prepare
+  hosts: all

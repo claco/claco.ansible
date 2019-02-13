@@ -1,0 +1,11 @@
+---
+# molecule file for claco.teamcity_build_agent
+
+- name: Converge
+  hosts: all
+  roles:
+    - role: claco.teamcity_build_agent
+      vars:
+        teamcity_build_agent_config_directory: "/data/teamcity_build_agent"
+        teamcity_build_agent_number: 1
+        teamcity_build_agent_network: "molecule"

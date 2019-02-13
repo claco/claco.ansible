@@ -1,0 +1,50 @@
+---
+# tasks file for claco.pip
+
+- name: Include Operating System Specific Variables
+  include_vars: "{{ item }}"
+  with_first_found:
+    - files:
+        - "{{ ansible_distribution | lower }}-{{ ansible_distribution_version | lower }}.yml"
+        - "{{ ansible_distribution | lower }}-{{ ansible_distribution_major_version | lower }}.yml"
+        - "{{ ansible_os_family | lower }}-{{ ansible_distribution_major_version | lower }}.yml"
+        - "{{ ansible_system | lower }}-{{ ansible_distribution_version | lower }}.yml"
+        - "{{ ansible_distribution | lower }}.yml"
+        - "{{ ansible_os_family | lower }}.yml"
+        - "{{ ansible_system | lower }}.yml"
+        - "main.yml"
+      paths:
+        - "{{ role_path }}/vars"
+
+- name: Install/Update Package {{ pip_package_name }}:{{ pip_package_version }}
+  pip:
+    name: "{{ pip_package_name }}{% if pip_package_version != 'latest' %}=={{ pip_package_version }}{% endif %}"
+    state: "{% if pip_package_version == 'latest' %}latest{% else %}present{% endif %}"
+    virtualenv: "{{ pip_virtualenv }}"
+  tags: pip-install
+
+- name: Create Configuration Directory
+  file:
+    path: "{{ pip_config_directory }}"
+    state: directory
+  tags: pip-configure
+
+- name: Configure Pip
+  template:
+    src: "pip.conf.j2"
+    dest: "~/.pip/pip.conf"
+  tags: pip-configure
+
+- name: Include Operating System Specific Tasks
+  include_tasks: "{{ item }}"
+  with_first_found:
+    - files:
+        - "{{ ansible_distribution | lower }}-{{ ansible_distribution_version | lower }}.yml"
+        - "{{ ansible_distribution | lower }}-{{ ansible_distribution_major_version | lower }}.yml"
+        - "{{ ansible_os_family | lower }}-{{ ansible_distribution_major_version | lower }}.yml"
+        - "{{ ansible_system | lower }}-{{ ansible_distribution_version | lower }}.yml"
+        - "{{ ansible_distribution | lower }}.yml"
+        - "{{ ansible_os_family | lower }}.yml"
+        - "{{ ansible_system | lower }}.yml"
+      paths:
+        - "{{ role_path }}/tasks"

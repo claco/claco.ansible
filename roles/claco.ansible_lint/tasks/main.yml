@@ -1,0 +1,43 @@
+---
+# tasks file for claco.ansible_lint
+
+- name: Include Operating System Specific Variables
+  include_vars: "{{ item }}"
+  with_first_found:
+    - files:
+        - "{{ ansible_distribution | lower }}-{{ ansible_distribution_version | lower }}.yml"
+        - "{{ ansible_distribution | lower }}-{{ ansible_distribution_major_version | lower }}.yml"
+        - "{{ ansible_os_family | lower }}-{{ ansible_distribution_major_version | lower }}.yml"
+        - "{{ ansible_system | lower }}-{{ ansible_distribution_version | lower }}.yml"
+        - "{{ ansible_distribution | lower }}.yml"
+        - "{{ ansible_os_family | lower }}.yml"
+        - "{{ ansible_system | lower }}.yml"
+        - "main.yml"
+      paths:
+        - "{{ role_path }}/vars"
+
+- name: Install/Update Package {{ ansible_lint_package_name }}:{{ ansible_lint_package_version }}
+  pip:
+    name: "{{ ansible_lint_package_name }}{% if ansible_lint_package_version != 'latest' %}=={{ ansible_lint_package_version }}{% endif %}"
+    state: "{% if ansible_lint_package_version == 'latest' %}latest{% else %}present{% endif %}"
+    virtualenv: "{{ ansible_lint_virtualenv }}"
+
+- name: Install/Update Ansible Lint Package {{ ansible_lint_package_name }}:{{ ansible_lint_package_version }}
+  pip:
+    name: "{{ ansible_lint_package_name }}{% if ansible_lint_package_version != 'latest' %}=={{ ansible_lint_package_version }}{% endif %}"
+    state: "{% if ansible_lint_package_version == 'latest' %}latest{% else %}present{% endif %}"
+    virtualenv: "{{ ansible_lint_virtualenv }}"
+
+- name: Include Operating System Specific Tasks
+  include_tasks: "{{ item }}"
+  with_first_found:
+    - files:
+        - "{{ ansible_distribution | lower }}-{{ ansible_distribution_version | lower }}.yml"
+        - "{{ ansible_distribution | lower }}-{{ ansible_distribution_major_version | lower }}.yml"
+        - "{{ ansible_os_family | lower }}-{{ ansible_distribution_major_version | lower }}.yml"
+        - "{{ ansible_system | lower }}-{{ ansible_distribution_version | lower }}.yml"
+        - "{{ ansible_distribution | lower }}.yml"
+        - "{{ ansible_os_family | lower }}.yml"
+        - "{{ ansible_system | lower }}.yml"
+      paths:
+        - "{{ role_path }}/tasks"

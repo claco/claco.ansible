@@ -1,0 +1,10 @@
+---
+# defaults file for claco.partition_disk
+partition_disk_device:
+partition_disk_number: 1
+partition_disk_label: "gpt"
+partition_disk_flags: []
+partition_disk_name:
+partition_disk_start: "0%"
+partition_disk_end: "100%"
+partition_disk_unit: "GB"

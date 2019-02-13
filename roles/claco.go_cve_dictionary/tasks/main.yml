@@ -1,0 +1,50 @@
+---
+# tasks file for claco.go_cve_dictionary
+
+- name: Include Operating System Specific Variables
+  include_vars: "{{ item }}"
+  with_first_found:
+    - files:
+        - "{{ ansible_distribution | lower }}-{{ ansible_distribution_version | lower }}.yml"
+        - "{{ ansible_distribution | lower }}-{{ ansible_distribution_major_version | lower }}.yml"
+        - "{{ ansible_os_family | lower }}-{{ ansible_distribution_major_version | lower }}.yml"
+        - "{{ ansible_system | lower }}-{{ ansible_distribution_version | lower }}.yml"
+        - "{{ ansible_distribution | lower }}.yml"
+        - "{{ ansible_os_family | lower }}.yml"
+        - "{{ ansible_system | lower }}.yml"
+        - "main.yml"
+      paths:
+        - "vars"
+
+- name: Download Go CVE Dictionary Source
+  git:
+    repo: "{{ go_cve_dictionary_repository }}"
+    dest: "{{ go_cve_dictionary_destination }}"
+    version: "v{{ go_cve_dictionary_version }}"
+    update: false
+    force: true
+
+- name: Compile Go CVE Dictionary
+  command: make install
+  args:
+    chdir: "{{ go_cve_dictionary_destination }}"
+    creates: "{{ go_cve_dictionary_binary }}"
+    warn: false
+  environment:
+    GOPATH: "{{ go_path }}"
+    PATH: "{{ ansible_env.PATH }}:{{ go_bin_path }}"
+
+- name: Include Operating System Specific Tasks
+  include_tasks: "{{ item }}"
+  with_first_found:
+    - files:
+        - "{{ ansible_distribution | lower }}-{{ ansible_distribution_version | lower }}.yml"
+        - "{{ ansible_distribution | lower }}-{{ ansible_distribution_major_version | lower }}.yml"
+        - "{{ ansible_os_family | lower }}-{{ ansible_distribution_major_version | lower }}.yml"
+        - "{{ ansible_system | lower }}-{{ ansible_distribution_version | lower }}.yml"
+        - "{{ ansible_distribution | lower }}.yml"
+        - "{{ ansible_os_family | lower }}.yml"
+        - "{{ ansible_system | lower }}.yml"
+      paths:
+        - "tasks"
+      skip: true

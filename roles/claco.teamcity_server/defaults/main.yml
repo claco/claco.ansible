@@ -1,0 +1,21 @@
+---
+# defaults file for claco.teamcity_server
+
+teamcity_server_data_directory: "{{ teamcity_server_directory }}/data"
+teamcity_server_directory:
+teamcity_server_image: "jetbrains/teamcity-server:latest"
+teamcity_server_logs_directory: "{{ teamcity_server_directory }}/logs"
+teamcity_server_network: "{{ build_network_name }}"
+
+# yamllint disable rule:line-length
+
+teamcity_server_plugins:
+  - name: "Artifactory Plugin"
+    url: "https://bintray.com/jfrog/jfrog-jars/download_file?file_path=org%2Fjfrog%2Fteamcity%2Fteamcity-artifactory-plugin%2F2.8.0%2Fteamcity-artifactory-plugin-2.8.0.zip"  # noqa 204
+    dest: "{{ teamcity_server_plugins_directory }}/artifactory.zip"
+    checksum: "sha256:c118deb76388a106f4921b56c94ae92a15293059353b166e389df4dbd5b7f464"
+
+# yamllint enable
+
+teamcity_server_plugins_directory: "{{ teamcity_server_data_directory }}/plugins"
+teamcity_server_port: 8111

@@ -1,0 +1,8 @@
+---
+# tests file for {{ role_name.split('/') | last }}
+
+- hosts: localhost
+  remote_user: root
+  roles:
+    - {{ role_name.split('/') | last }}
+

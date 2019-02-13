@@ -1,0 +1,5 @@
+---
+# defaults file for claco.python
+
+python_package_name: "python3-dev"
+python_package_version: "latest"

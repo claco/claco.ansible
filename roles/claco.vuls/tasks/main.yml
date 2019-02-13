@@ -1,0 +1,119 @@
+---
+# tasks file for claco.vuls
+
+- name: Include Operating System Specific Variables
+  include_vars: "{{ item }}"
+  with_first_found:
+    - files:
+        - "{{ ansible_distribution | lower }}-{{ ansible_distribution_version | lower }}.yml"
+        - "{{ ansible_distribution | lower }}-{{ ansible_distribution_major_version | lower }}.yml"
+        - "{{ ansible_os_family | lower }}-{{ ansible_distribution_major_version | lower }}.yml"
+        - "{{ ansible_system | lower }}-{{ ansible_distribution_version | lower }}.yml"
+        - "{{ ansible_distribution | lower }}.yml"
+        - "{{ ansible_os_family | lower }}.yml"
+        - "{{ ansible_system | lower }}.yml"
+        - "main.yml"
+      paths:
+        - "vars"
+
+- name: Install/Update Required Packages
+  package:
+    name: "{{ item.name }}{% if item.version != 'latest' %}={{ item.version }}{% endif %}"
+    state: "{% if item.version == 'latest' %}latest{% else %}present{% endif %}"
+  loop: "{{ vuls_required_packages }}"
+
+- name: Download Vuls Source
+  git:
+    repo: "{{ vuls_repository }}"
+    dest: "{{ vuls_destination }}"
+    version: "v{{ vuls_version }}"
+    update: false
+    force: true
+
+- name: Compile Vuls
+  command: make install
+  args:
+    chdir: "{{ vuls_destination }}"
+    creates: "{{ vuls_binary }}"
+    warn: false
+  environment:
+    GOPATH: "{{ go_path }}"
+    PATH: "{{ ansible_env.PATH }}:{{ go_bin_path }}"
+
+- name: Create Vuls Working Directory
+  file:
+    path: "{{ vuls_working_directory }}"
+    state: directory
+
+- name: Configure Vuls {{ vuls_config_file }}
+  template:
+    src: "config.toml.j2"
+    dest: "{{ vuls_config_file }}"
+
+- name: Load NVD Data
+  command: "{{ go_cve_dictionary_binary }} fetchnvd {{ vuls_nvd_time_period }} -dbpath {{ vuls_nvd_dbpath }} -dbtype {{ vuls_nvd_dbtype }}"
+  args:
+    chdir: "{{ vuls_working_directory }}"
+    warn: false
+  environment:
+    GOPATH: "{{ go_path }}"
+    PATH: "{{ ansible_env.PATH }}:{{ go_bin_path }}"
+  when: vuls_nvd_always_update
+
+- name: Load JVN Data
+  command: "{{ go_cve_dictionary_binary }} fetchjvn {{ vuls_jvn_time_period }} -dbpath {{ vuls_jvn_dbpath }} -dbtype {{ vuls_jvn_dbtype }}"
+  args:
+    chdir: "{{ vuls_working_directory }}"
+    warn: false
+  environment:
+    GOPATH: "{{ go_path }}"
+    PATH: "{{ ansible_env.PATH }}:{{ go_bin_path }}"
+  when: vuls_jvn_always_update
+
+- name: Load Goval Data
+  command: "{{ goval_dictionary_binary }} fetch-{{ item.type }} -dbpath={{ vuls_goval_dbpath }} -dbtype={{ vuls_goval_dbtype }} {{ item.versions | join(' ') }}"
+  args:
+    chdir: "{{ vuls_working_directory }}"
+    warn: false
+  environment:
+    GOPATH: "{{ go_path }}"
+    PATH: "{{ ansible_env.PATH }}:{{ go_bin_path }}"
+  when: vuls_goval_always_update
+  loop: "{{ vuls_goval_fetch }}"
+
+- name: Load Gost Data
+  command: "{{ gost_binary }} fetch {{ item }} --dbpath={{ vuls_gost_dbpath }} --dbtype={{ vuls_gost_dbtype }}"
+  args:
+    chdir: "{{ vuls_working_directory }}"
+    warn: false
+  environment:
+    GOPATH: "{{ go_path }}"
+    PATH: "{{ ansible_env.PATH }}:{{ go_bin_path }}"
+  when: vuls_goval_always_update
+  loop: "{{ vuls_gost_fetch }}"
+
+- name: Load Exploit DB Data
+  command: "{{ go_exploitdb_binary }} fetch {{ item }} --dbpath={{ vuls_go_exploitdb_dbpath }} --dbtype={{ vuls_go_exploitdb_dbtype }}"
+  args:
+    chdir: "{{ vuls_working_directory }}"
+    warn: false
+  environment:
+    GOPATH: "{{ go_path }}"
+    PATH: "{{ ansible_env.PATH }}:{{ go_bin_path }}"
+  when: vuls_go_exploitdb_always_update
+  loop: "{{ vuls_go_exploitdb_fetch }}"
+
+- name: Include Operating System Specific Tasks
+  include_tasks: "{{ item }}"
+  with_first_found:
+    - files:
+        - "{{ ansible_distribution | lower }}-{{ ansible_distribution_version | lower }}.yml"
+        - "{{ ansible_distribution | lower }}-{{ ansible_distribution_major_version | lower }}.yml"
+        - "{{ ansible_os_family | lower }}-{{ ansible_distribution_major_version | lower }}.yml"
+        - "{{ ansible_system | lower }}-{{ ansible_distribution_version | lower }}.yml"
+        - "{{ ansible_distribution | lower }}.yml"
+        - "{{ ansible_os_family | lower }}.yml"
+        - "{{ ansible_system | lower }}.yml"
+      paths:
+        - "tasks"
+      skip: true
