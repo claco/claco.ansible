@@ -1,0 +1,7 @@
+---
+# molecule file for claco.readline
+
+- name: Converge
+  hosts: all
+  roles:
+    - role: claco.readline

@@ -1,0 +1,7 @@
+---
+# tests file for claco.shell
+
+- hosts: localhost
+  remote_user: root
+  roles:
+    - claco.shell

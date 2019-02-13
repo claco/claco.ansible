@@ -1,0 +1,7 @@
+---
+# tests file for claco.partition_disk
+
+- hosts: localhost
+  remote_user: root
+  roles:
+    - claco.partition_disk

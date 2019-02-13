@@ -1,0 +1,7 @@
+---
+# tests file for claco.parted
+
+- hosts: localhost
+  remote_user: root
+  roles:
+    - claco.parted

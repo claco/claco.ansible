@@ -1,0 +1,7 @@
+---
+# defaults file for claco.yamllint
+
+yamllint_package_name: "yamllint"
+yamllint_package_version: "latest"
+
+yamllint_virtualenv: "{{ pip_virtualenv }}"

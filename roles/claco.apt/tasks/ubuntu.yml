@@ -1,0 +1,9 @@
+---
+# tasks file for claco.apt
+
+- name: Install Aptitude
+  apt:
+    name: aptitude
+    state: latest  # noqa 403
+    force_apt_get: true
+  when: apt_use_aptitude

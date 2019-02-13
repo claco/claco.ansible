@@ -1,0 +1,5 @@
+---
+# molecule file for claco.docker_registry
+
+- name: Prepare
+  hosts: all

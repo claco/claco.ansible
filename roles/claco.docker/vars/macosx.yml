@@ -1,0 +1,4 @@
+---
+# vars file for claco.docker
+
+docker_package_name: "docker"

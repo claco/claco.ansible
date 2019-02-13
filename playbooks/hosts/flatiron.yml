@@ -1,0 +1,30 @@
+---
+# playbook to configure the Flatiron MBP
+
+- name: Configure Flatiron Laptop
+  hosts: localhost
+  roles:
+    - role: claco.ansible
+      tags: ansible
+
+    - role: claco.git
+      tags: git
+
+    - role: claco.pip
+      tags: pip
+
+- name: Install Ansible Building Tools
+  import_playbook: ../building.yml
+  tags: building
+
+- name: Install Ansible Deployment Tools
+  import_playbook: ../deployment.yml
+  tags: deployment
+
+- name: Install Ansible Linting Tools
+  import_playbook: ../linting.yml
+  tags: linting
+
+- name: Install Ansible Testing Tools
+  import_playbook: ../testing.yml
+  tags: testing

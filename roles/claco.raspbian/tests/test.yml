@@ -1,0 +1,7 @@
+---
+# tests file for claco.raspbian
+
+- hosts: localhost
+  remote_user: root
+  roles:
+    - claco.raspbian

@@ -1,0 +1,5 @@
+---
+# molecule file for claco.python
+
+- name: Side Effects
+  hosts: all

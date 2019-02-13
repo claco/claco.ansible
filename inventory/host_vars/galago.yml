@@ -1,0 +1,2 @@
+---
+hostname: "galago-{{ ansible_product_version }}"

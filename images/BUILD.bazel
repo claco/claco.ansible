@@ -1,0 +1,106 @@
+package(default_visibility = ["//visibility:public"])
+
+load("@io_bazel_rules_docker//container:container.bzl", "container_bundle", "container_image", "container_layer")
+load("@package_bundle//file:packages.bzl", "packages")
+
+container_layer(
+  name = "common_python_layer",
+  debs = [
+    packages["python3-pkg-resources"],
+    packages["python3-setuptools"]
+  ]
+)
+
+container_image(
+  name = "ansible",
+  base = "@python_base//image",
+  layers = [
+    ":common_python_layer"
+  ],
+  debs = [
+    packages["ansible"],
+    packages["python3-jinja2"],
+    packages["python3-markupsafe"],
+    packages["python3-yaml"]
+  ],
+  tars = [
+    "//:ansible_config"
+  ],
+  entrypoint = [
+    "/usr/bin/ansible"
+  ],
+  workdir = "/workspace"
+)
+
+container_image(
+  name = "ansible-galaxy",
+  base = ":ansible",
+  entrypoint = [
+    "/usr/bin/ansible-galaxy"
+  ]
+)
+
+container_image(
+  name = "ansible-playbook",
+  base = ":ansible",
+  entrypoint = [
+    "/usr/bin/ansible-playbook"
+  ]
+)
+
+container_image(
+  name = "ansible-lint",
+  base = ":ansible",
+  layers = [
+    ":common_python_layer"
+  ],
+  debs = [
+    packages["ansible-lint"],
+    packages["python3-ruamel.yaml"],
+    packages["python3-six"]
+  ],
+  tars = [
+    "//:ansible_config"
+  ],
+  cmd = [
+    "-c", ".ansible-lint", "-R", "-v"
+  ],
+  entrypoint = [
+    "/usr/bin/ansible-lint"
+  ],
+  workdir = "/workspace"
+)
+
+container_image(
+  name = "yamllint",
+  base = "@python_base//image",
+  layers = [
+    ":common_python_layer"
+  ],
+  debs = [
+    packages["python3-pathspec"],
+    packages["python3-yaml"],
+    packages["yamllint"]
+  ],
+  tars = [
+    "//:yamllint_config"
+  ],
+  cmd = [
+    "-c", ".yamllint", "--strict", "."
+  ],
+  entrypoint = [
+    "/usr/bin/yamllint"
+  ],
+  workdir = "/workspace"
+)
+
+container_bundle(
+    name = "linting",
+    images = {
+      "ansible": ":ansible",
+      "ansible-galaxy": ":ansible-galaxy",
+      "ansible-playbook": ":ansible-playbook",
+      "ansible-lint": ":ansible-lint",
+      "yamllint": ":yamllint"
+    }
+)

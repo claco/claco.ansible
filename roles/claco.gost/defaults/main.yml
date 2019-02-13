@@ -1,0 +1,8 @@
+---
+# defaults file for claco.gost
+
+gost_binary: "{{ go_bin_path }}/gost"
+gost_destination: "{{ go_src_path }}/github.com/knqyf263/{{ gost_package }}"
+gost_package: "gost"
+gost_repository: "https://github.com/knqyf263/{{ gost_package }}.git"
+gost_version: "0.1.0"

@@ -1,0 +1,31 @@
+cacheDBPath = "{{ vuls_cache_dbpath }}"
+logdir = "{{ vuls_log_directory }}"
+resultsDir = "{{ vuls_results_directory }}"
+
+[default]
+scanMode = ["{{ vuls_scan_mode | join('\", \"') }}"]
+
+[servers.localhost]
+host     = "localhost"
+port     = "local"
+user     = "root"
+
+#[servers.localhost.docker]
+#type     = "docker"
+#includes = ["${running}"]
+
+[cveDict]
+type        = "{{ vuls_nvd_dbtype }}"
+sqlite3path = "{{ vuls_nvd_dbpath }}"
+
+[ovalDict]
+type        = "{{ vuls_goval_dbtype }}"
+sqlite3path = "{{ vuls_goval_dbpath }}"
+
+[gost]
+type        = "{{ vuls_gost_dbtype }}"
+sqlite3path = "{{ vuls_gost_dbpath }}"
+
+[exploit]
+type        = "{{ vuls_go_exploitdb_dbtype }}"
+sqlite3path = "{{ vuls_go_exploitdb_dbpath }}"

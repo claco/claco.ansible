@@ -1,0 +1,5 @@
+---
+# molecule file for claco.pip
+
+- name: Cleanup
+  hosts: all

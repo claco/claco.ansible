@@ -1,0 +1,9 @@
+---
+# vars file for claco.bash
+
+
+bash_binary: "/bin/bash"
+bash_completion_source_directory: "/usr/share/bash-completion/completions"
+bash_required_packages:
+  - "bash"
+  - "bash-completion"

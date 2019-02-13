@@ -1,0 +1,8 @@
+---
+# vars file for claco.raspbian
+
+raspbian_download_folder: "/data"
+raspbian_mount_point: "/mnt/raspbian"
+raspbian_required_packages:
+  - name: "kpartx"
+    version: "latest"

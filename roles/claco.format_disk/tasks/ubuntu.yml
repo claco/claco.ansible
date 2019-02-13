@@ -1,0 +1,34 @@
+---
+# tasks file for claco.format_disk
+
+- name: Format Disk Device
+  block:
+
+    - name: Read Disk Device Mounts
+      set_fact:
+        format_disk_device_mounts: "{{ ansible_mounts | selectattr('device', 'match', erase_disk_device) | list }}"
+
+    - name: Unmount Disk Device Partitions
+      mount:
+        path: "{{ mounted_partition.mount }}"
+        state: unmounted
+      loop: "{{ erase_disk_device_mounts }}"
+      loop_control:
+        loop_var: mounted_partition
+
+    - name: Read Disk Device Partitions
+      parted:
+        device: "{{ erase_disk_device }}"
+        unit: GiB
+      register: erase_disk_device_info
+
+    - name: Delete Disk Device Partitions
+      parted:
+        device: "{{ erase_disk_device }}"
+        number: '{{ device_partition.num }}'
+        state: absent
+      loop: "{{ erase_disk_device_info.partitions }}"
+      loop_control:
+        loop_var: device_partition
+
+  when: ansible_device_links.ids[format_disk_device.split('/') | last] is defined

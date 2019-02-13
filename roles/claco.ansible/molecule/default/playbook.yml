@@ -1,0 +1,8 @@
+---
+# molecule file for claco.ansible
+
+- name: Converge
+  hosts: all
+  roles:
+    - role: claco.ansible
+      ansible_virtualenv: "~/.venv"

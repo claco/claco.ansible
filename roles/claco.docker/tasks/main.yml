@@ -1,0 +1,39 @@
+---
+# tasks file for claco.docker
+
+- name: Include Operating System Specific Variables
+  include_vars: "{{ item }}"
+  with_first_found:
+    - files:
+        - "{{ ansible_distribution | lower }}-{{ ansible_distribution_version | lower }}.yml"
+        - "{{ ansible_distribution | lower }}-{{ ansible_distribution_major_version | lower }}.yml"
+        - "{{ ansible_os_family | lower }}-{{ ansible_distribution_major_version | lower }}.yml"
+        - "{{ ansible_system | lower }}-{{ ansible_distribution_version | lower }}.yml"
+        - "{{ ansible_distribution | lower }}.yml"
+        - "{{ ansible_os_family | lower }}.yml"
+        - "{{ ansible_system | lower }}.yml"
+        - "main.yml"
+      paths:
+        - "{{ role_path }}/vars"
+
+- name: Include Operating System Specific Tasks
+  include_tasks: "{{ item }}"
+  with_first_found:
+    - files:
+        - "{{ ansible_distribution | lower }}-{{ ansible_distribution_version | lower }}.yml"
+        - "{{ ansible_distribution | lower }}-{{ ansible_distribution_major_version | lower }}.yml"
+        - "{{ ansible_os_family | lower }}-{{ ansible_distribution_major_version | lower }}.yml"
+        - "{{ ansible_system | lower }}-{{ ansible_distribution_version | lower }}.yml"
+        - "{{ ansible_distribution | lower }}.yml"
+        - "{{ ansible_os_family | lower }}.yml"
+        - "{{ ansible_system | lower }}.yml"
+      paths:
+        - "{{ role_path }}/tasks"
+
+- name: Install/Update Docker Python Support
+  pip:
+    name: "{{ item.name }}{% if item.version != 'latest' %}=i={{ item.version }}{% endif %}"
+    state: "{% if item.version == 'latest' %}latest{% else %}present{% endif %}"
+    virtualenv: "{{ docker_python_virtualenv }}"
+  loop: "{{ docker_python_packages }}"
+  when: docker_python_support | bool

@@ -1,0 +1,10 @@
+---
+# molecule file for claco.docker_registry
+
+- name: Converge
+  hosts: all
+  roles:
+    - role: claco.docker_registry
+      vars:
+        docker_registry_data_directory: "/data/docker_registry"
+        docker_registry_network: "molecule"

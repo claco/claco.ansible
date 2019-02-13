@@ -1,0 +1,11 @@
+---
+# molecule file for claco.add_disk
+
+- name: Converge
+  hosts: all
+  roles:
+    - role: claco.add_disk
+      vars:
+        add_disk_device: "/dev/loop0"
+        add_disk_partition: "/dev/loop0p1"
+        add_disk_mount: "/mnt/add_disk"

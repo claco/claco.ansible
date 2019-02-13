@@ -1,0 +1,7 @@
+---
+# tests file for claco.add_disk
+
+- hosts: localhost
+  remote_user: root
+  roles:
+    - claco.add_disk

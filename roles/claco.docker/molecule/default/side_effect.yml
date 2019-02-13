@@ -1,0 +1,5 @@
+---
+# molecule file for claco.docker
+
+- name: Side Effects
+  hosts: all

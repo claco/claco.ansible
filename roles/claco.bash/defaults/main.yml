@@ -1,0 +1,13 @@
+---
+# defaults file for claco.bash
+
+bash_binary: "{{ required }}"
+bash_completion_directory: "{{ ansible_env.HOME }}/.bash_completion.d"
+bash_completion_source_directory: "{{ required }}"
+bash_default_shell: false
+bash_logout_file: "{{ ansible_env.HOME }}/.bash_logout"
+bash_profile_directory: "{{ ansible_env.HOME }}/.bash_profile.d"
+bash_profile_file: "{{ ansible_env.HOME }}/.bash_profile"
+bash_rc_file: "{{ ansible_env.HOME }}/.bashrc"
+bash_required_packages: []
+bash_user: "{{ ansible_user }}"

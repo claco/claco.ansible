@@ -1,0 +1,52 @@
+---
+# tasks file for claco.pacman
+
+- name: Include Operating System Variables
+  include_vars: "{{ item }}"
+  with_first_found:
+    - files:
+        - "{{ ansible_distribution | lower }}-{{ ansible_distribution_version | lower }}.yml"
+        - "{{ ansible_distribution | lower }}-{{ ansible_distribution_major_version | lower }}.yml"
+        - "{{ ansible_os_family | lower }}-{{ ansible_distribution_major_version | lower }}.yml"
+        - "{{ ansible_system | lower }}-{{ ansible_distribution_version | lower }}.yml"
+        - "{{ ansible_distribution | lower }}.yml"
+        - "{{ ansible_os_family | lower }}.yml"
+        - "{{ ansible_system | lower }}.yml"
+        - "main.yml"
+      paths:
+        - "{{ role_path }}/vars"
+
+- name: Update Repositories
+  pacman:
+    update_cache: true
+  become: true
+  tags: pacman-update
+
+- name: Upgrade Installed Packages
+  pacman:
+    upgrade: true
+  become: true
+  tags: pacman-upgrade
+
+- name: Reboot To Complete Upgrades
+  reboot:
+    msg: "Rebooting system to complete upgrades"
+  when: pacman_reboot
+  become: true
+  tags:
+    - pacman-reboot
+    - skip_ansible_lint  # See https://github.com/ansible/ansible-lint/issues/396
+
+- name: Include Operating System Specific Tasks
+  include_tasks: "{{ item }}"
+  with_first_found:
+    - files:
+        - "{{ ansible_distribution | lower }}-{{ ansible_distribution_version | lower }}.yml"
+        - "{{ ansible_distribution | lower }}-{{ ansible_distribution_major_version | lower }}.yml"
+        - "{{ ansible_os_family | lower }}-{{ ansible_distribution_major_version | lower }}.yml"
+        - "{{ ansible_system | lower }}-{{ ansible_distribution_version | lower }}.yml"
+        - "{{ ansible_distribution | lower }}.yml"
+        - "{{ ansible_os_family | lower }}.yml"
+        - "{{ ansible_system | lower }}.yml"
+      paths:
+        - "{{ role_path }}/tasks"

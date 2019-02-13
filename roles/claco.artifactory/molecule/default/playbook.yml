@@ -1,0 +1,10 @@
+---
+# molecule file for claco.artifactory
+
+- name: Converge
+  hosts: all
+  roles:
+    - role: claco.artifactory
+      vars:
+        artifactory_data_directory: "/data/artifactory"
+        artifactory_network: "molecule"

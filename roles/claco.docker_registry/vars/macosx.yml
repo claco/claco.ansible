@@ -1,0 +1,4 @@
+---
+# vars file for claco.docker_registry
+
+docker_registry_data_directory: "~/data/docker-registry"

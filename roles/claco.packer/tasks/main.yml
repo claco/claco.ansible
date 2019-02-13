@@ -1,0 +1,45 @@
+---
+# tasks file for claco.packer
+
+- name: Include Operating System Specific Variables
+  include_vars: "{{ item }}"
+  with_first_found:
+    - files:
+        - "{{ ansible_distribution | lower }}-{{ ansible_distribution_version | lower }}.yml"
+        - "{{ ansible_distribution | lower }}-{{ ansible_distribution_major_version | lower }}.yml"
+        - "{{ ansible_os_family | lower }}-{{ ansible_distribution_major_version | lower }}.yml"
+        - "{{ ansible_system | lower }}-{{ ansible_distribution_version | lower }}.yml"
+        - "{{ ansible_distribution | lower }}.yml"
+        - "{{ ansible_os_family | lower }}.yml"
+        - "{{ ansible_system | lower }}.yml"
+        - "main.yml"
+      paths:
+        - "{{ role_path }}/vars"
+
+- name: Download Binary {{ packer_download_filename }}
+  get_url:
+    url: "{{ packer_download_url }}"
+    dest: "/tmp/{{ packer_download_filename }}"
+    checksum: "{{ packer_download_checksum }}"
+  register: packer_download
+
+- name: Install Binary {{ packer_binary_path }}/{{ packer_package_name }}
+  unarchive:
+    src: "{{ packer_download.dest }}"
+    dest: "{{ packer_binary_path }}"
+    remote_src: true
+  when: packer_download is changed
+
+- name: Include Operating System Specific Tasks
+  include_tasks: "{{ item }}"
+  with_first_found:
+    - files:
+        - "{{ ansible_distribution | lower }}-{{ ansible_distribution_version | lower }}.yml"
+        - "{{ ansible_distribution | lower }}-{{ ansible_distribution_major_version | lower }}.yml"
+        - "{{ ansible_os_family | lower }}-{{ ansible_distribution_major_version | lower }}.yml"
+        - "{{ ansible_system | lower }}-{{ ansible_distribution_version | lower }}.yml"
+        - "{{ ansible_distribution | lower }}.yml"
+        - "{{ ansible_os_family | lower }}.yml"
+        - "{{ ansible_system | lower }}.yml"
+      paths:
+        - "{{ role_path }}/tasks"

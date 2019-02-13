@@ -1,0 +1,65 @@
+---
+# playbook to configure the Galaga Pro
+
+- name: Configure Galago Pro
+  hosts: galago
+  roles:
+    - role: claco.apt
+      tags: apt
+
+    - role: claco.bash
+      tags: bash
+
+    - role: claco.shell
+      vars:
+        shell_binary: "{{ bash_binary }}"
+      tags: shell
+
+    - role: claco.readline
+      tags: readline
+
+#    - role: claco.add_disk
+#      become: true
+#      tags: add-disk
+#      vars:
+#        add_disk_device: "/dev/sda"
+#        add_disk_mount: "/data"
+
+#    - role: claco.ansible
+#      tags: ansible
+
+#    - role: claco.ansible_lint
+#      tags: ansible-lint
+
+#    - role: claco.docker
+#      become: true
+#      tags: docker
+
+#    - role: claco.docker_registry
+#      tags: docker-registry
+#      vars:
+#        docker_registry_data_directory: "/data/docker_registry"
+
+#    - role: claco.python
+#      become: true
+#      tags: python
+
+#    - role: claco.molecule
+#      tags: molecule
+
+#    - role: claco.packer
+#      become: true
+#      tags: packer
+
+#    - role: claco.pip
+#      tags: pip
+
+#    - role: claco.pre_commit
+#      tags: pre-commit
+
+#    - role: claco.pylama
+#      tags: pylama
+
+#- name: Install Ansible Linting Tools
+#  import_playbook: ../linting.yml
+#  tags: linting

@@ -1,0 +1,4 @@
+---
+# vars file for claco.teamcity_server
+
+teamcity_server_directory: "/data/teamcity_server"

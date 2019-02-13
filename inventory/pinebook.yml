@@ -1,0 +1,6 @@
+---
+all:
+  hosts:
+    pinebook:
+      ansible_connection: "local"
+      ansible_host: "localhost"

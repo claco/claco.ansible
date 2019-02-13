@@ -1,0 +1,6 @@
+---
+all:
+  hosts:
+    galago:
+      ansible_connection: "local"
+      ansible_host: "localhost"

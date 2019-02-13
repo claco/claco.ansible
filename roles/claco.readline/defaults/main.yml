@@ -1,0 +1,4 @@
+---
+# defaults file for claco.readline
+
+readline_inputrc_file: "{{ ansible_env.HOME }}/.inputrc"

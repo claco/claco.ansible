@@ -1,0 +1,30 @@
+---
+# tasks file for claco.add_disk
+
+- name: Adding Disk {{ add_disk_device }}
+  block:
+
+    - name: Creating Disk Partition {{ add_disk_partition }}
+      parted:
+        device: "{{ add_disk_device }}"
+        label: "{{ add_disk_label }}"
+        number: "{{ add_disk_partition_number }}"
+        state: present
+
+    - name: Formatting Disk Partition {{ add_disk_partition }} as {{ add_disk_fstype }}
+      filesystem:
+        fstype: "{{ add_disk_fstype }}"
+        dev: "{{ add_disk_partition }}"
+
+    - name: Reload Disk Device Information
+      setup:
+        filter: ansible_device_links
+
+    - name: Mount {{ add_disk_partition }} to {{ add_disk_mount }}
+      mount:
+        path: "{{ add_disk_mount }}"
+        src: "UUID={{ ansible_device_links.uuids[ add_disk_partition.split('/') | last ] | join }}"
+        fstype: "{{ add_disk_fstype }}"
+        state: mounted
+
+  when: add_disk_device and add_disk_mount

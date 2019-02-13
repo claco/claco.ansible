@@ -1,0 +1,5 @@
+---
+# molecule file for claco.packer
+
+- name: Prepare
+  hosts: all

@@ -1,0 +1,11 @@
+---
+# defaults file for claco.pylama
+
+pylama_package_name: "pylama"
+pylama_package_plugins:
+  - name: "eradicate"
+    version: "latest"
+  - name: "pytest-eradicate"
+    version: "latest"
+pylama_package_version: "latest"
+pylama_virtualenv: "{{ pip_virtualenv }}"

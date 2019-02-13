@@ -1,0 +1,7 @@
+---
+# tests file for claco.erase_disk
+
+- hosts: localhost
+  remote_user: root
+  roles:
+    - claco.erase_disk

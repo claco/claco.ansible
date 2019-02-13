@@ -1,0 +1,3 @@
+---
+# defaults file for claco.erase_disk
+erase_disk_device:

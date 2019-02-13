@@ -1,0 +1,5 @@
+---
+# molecule file for claco.erase_disk
+
+- name: Side Effects
+  hosts: all

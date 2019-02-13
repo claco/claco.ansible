@@ -1,0 +1,19 @@
+---
+# tasks file for claco.partition_disk
+
+- name: Partition Disk Device
+  block:
+
+    - name: Create Disk Device Partition
+      parted:
+        device: "{{ partition_disk_device }}"
+        number: '{{ partition_disk_number }}'
+        label: '{{ partition_disk_label }}'
+        name: '{{ partition_disk_name }}'
+        flags: '{{ partition_disk_flags }}'
+        part_start: '{{ partition_disk_start }}'
+        part_end: '{{ partition_disk_end }}'
+        unit: '{{ partition_disk_unit }}'
+        state: present
+
+  when: ansible_device_links.ids[partition_disk_device.split('/') | last] is defined

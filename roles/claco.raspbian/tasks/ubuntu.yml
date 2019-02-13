@@ -1,0 +1,33 @@
+---
+# tasks file for claco.raspbian
+
+- name: Create Boot Partition Loopback Device
+  command: "kpartx -a {{ raspbian_download_folder }}/{{ raspbian_download_image }}"
+  args:
+    creates: "/dev/mapper/loop0p1"
+  register: raspbian_loopback
+
+- name: Create Raspbian Mount Point
+  file:
+    path: "{{ raspbian_mount_point }}"
+    state: directory
+
+- name: Mount Raspbian Boot Partition
+  command: "mount /dev/mapper/loop0p1 {{ raspbian_mount_point }}"
+  args:
+    creates: "{{ raspbian_mount_point }}/kernel.img"
+    warn: false
+
+- name: Enable SSH On Boot Partition
+  file:
+    path: "{{ raspbian_mount_point }}/ssh"
+    state: touch
+
+- name: Unmount Raspbian Boot Partition
+  command: "umount {{ raspbian_mount_point }}"  # noqa 301
+  args:
+    warn: false
+
+- name: Delete Boot Partition Loopback Device
+  command: "kpartx -d {{ raspbian_download_folder }}/{{ raspbian_download_image }}"
+  when: raspbian_loopback is changed

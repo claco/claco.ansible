@@ -1,0 +1,55 @@
+---
+# tasks file for claco.teamcity_build_agent
+
+- name: Include Operating System Variables
+  include_vars: "{{ item }}"
+  with_first_found:
+    - files:
+        - "{{ ansible_distribution | lower }}-{{ ansible_distribution_version | lower }}.yml"
+        - "{{ ansible_distribution | lower }}-{{ ansible_distribution_major_version | lower }}.yml"
+        - "{{ ansible_os_family | lower }}-{{ ansible_distribution_major_version | lower }}.yml"
+        - "{{ ansible_distribution | lower }}.yml"
+        - "{{ ansible_os_family | lower }}.yml"
+        - "{{ ansible_system | lower }}.yml"
+        - "main.yml"
+      paths:
+        - "vars"
+
+- name: Include Operating System Specific Tasks
+  include_tasks: "{{ item }}"
+  with_first_found:
+    - files:
+        - "{{ ansible_distribution | lower }}-{{ ansible_distribution_version | lower }}.yml"
+        - "{{ ansible_distribution | lower }}-{{ ansible_distribution_major_version | lower }}.yml"
+        - "{{ ansible_os_family | lower }}-{{ ansible_distribution_major_version | lower }}.yml"
+        - "{{ ansible_distribution | lower }}.yml"
+        - "{{ ansible_os_family | lower }}.yml"
+        - "{{ ansible_system | lower }}.yml"
+      paths:
+        - "tasks"
+      skip: true
+
+- name: Pull TeamCity Build Agent Docker Image {{ teamcity_build_agent_image }}
+  docker_image:
+    name: "{{ teamcity_build_agent_image }}"
+    state: present
+
+- name: Create TeamCity Build Agent Network {{ teamcity_build_agent_network }}
+  docker_network:
+    name: "{{ teamcity_build_agent_network }}"
+    state: present
+
+- name: Start TeamCity Build Agent Docker Container
+  docker_container:
+    name: "{{ teamcity_build_agent_name }}"
+    image: "{{ teamcity_build_agent_image }}"
+    auto_remove: true
+    env:
+      AGENT_NAME: "{{ teamcity_build_agent_name }}"
+      SERVER_URL: "{{ teamcity_build_agent_server_url }}"
+    hostname: "{{ teamcity_build_agent_name }}"
+    networks:
+      - name: "{{ teamcity_build_agent_network }}"
+    volumes:
+      - "{{ teamcity_build_agent_config_directory }}:/data/teamcity_agent/conf"
+    state: started

@@ -1,0 +1,82 @@
+---
+# tasks file for claco.bash
+
+- name: Include Operating System Specific Variables
+  include_vars: "{{ item }}"
+  with_first_found:
+    - files:
+        - "{{ ansible_distribution | lower }}-{{ ansible_distribution_version | lower }}.yml"
+        - "{{ ansible_distribution | lower }}-{{ ansible_distribution_major_version | lower }}.yml"
+        - "{{ ansible_os_family | lower }}-{{ ansible_distribution_major_version | lower }}.yml"
+        - "{{ ansible_system | lower }}-{{ ansible_distribution_version | lower }}.yml"
+        - "{{ ansible_distribution | lower }}.yml"
+        - "{{ ansible_os_family | lower }}.yml"
+        - "{{ ansible_system | lower }}.yml"
+        - "main.yml"
+      paths:
+        - "{{ role_path }}/vars"
+
+- name: Install Required Packages
+  package:
+    name: "{{ item }}"
+    state: latest
+  become: true
+  with_items:
+    - "{{ bash_required_packages }}"
+
+- name: Create Completion Directory
+  file:
+    name: "{{ bash_completion_directory }}"
+    state: directory
+  tags: bash-config, bash-config-completion
+
+- name: Create Profile Directory
+  file:
+    name: "{{ bash_profile_directory }}"
+    state: directory
+  tags: bash-config, bash-config-profile
+
+- name: Configure Profile.d
+  template:
+    src: "bash_profile.d/{{ item }}.j2"
+    dest: "{{ bash_profile_directory }}/{{ item }}"
+  tags: bash-config, bash-config-profile
+  with_items:
+    - alias
+    - export
+    - prompt
+
+- name: Configure Profile
+  blockinfile:
+    block: "{{ lookup('template', 'bash_profile.j2') }}"
+    create: true
+    dest: "{{ bash_profile_file }}"
+  tags: bash-config, bash-config-profile
+
+- name: Configure RC
+  blockinfile:
+    block: "{{ lookup('template', 'bashrc.j2') }}"
+    create: true
+    dest: "{{ bash_rc_file }}"
+  tags: bash-config, bash-config-rc
+
+- name: Configure Logout
+  blockinfile:
+    block: "{{ lookup('template', 'bash_logout.j2') }}"
+    create: true
+    dest: "{{ bash_logout_file }}"
+  tags: bash-config, bash-config-logout
+
+- name: Include Operating System Specific Tasks
+  include_tasks: "{{ item }}"
+  with_first_found:
+    - files:
+        - "{{ ansible_distribution | lower }}-{{ ansible_distribution_version | lower }}.yml"
+        - "{{ ansible_distribution | lower }}-{{ ansible_distribution_major_version | lower }}.yml"
+        - "{{ ansible_os_family | lower }}-{{ ansible_distribution_major_version | lower }}.yml"
+        - "{{ ansible_system | lower }}-{{ ansible_distribution_version | lower }}.yml"
+        - "{{ ansible_distribution | lower }}.yml"
+        - "{{ ansible_os_family | lower }}.yml"
+        - "{{ ansible_system | lower }}.yml"
+      paths:
+        - "{{ role_path }}/tasks"

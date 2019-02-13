@@ -1,0 +1,7 @@
+---
+# molecule file for claco.vuls
+
+- name: Converge
+  hosts: all
+  roles:
+    - role: claco.vuls

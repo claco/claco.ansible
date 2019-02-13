@@ -1,0 +1,8 @@
+---
+# defaults file for claco.goval_dictionary
+
+goval_dictionary_binary: "{{ go_bin_path }}/goval-dictionary"
+goval_dictionary_destination: "{{ go_src_path }}/github.com/kotakanbe/{{ goval_dictionary_package }}"
+goval_dictionary_package: "goval-dictionary"
+goval_dictionary_repository: "https://github.com/kotakanbe/{{ goval_dictionary_package }}.git"
+goval_dictionary_version: "0.1.1"

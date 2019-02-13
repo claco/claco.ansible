@@ -1,0 +1,70 @@
+---
+# defaults file for claco.vuls
+
+vuls_binary: "{{ go_bin_path }}/vuls"
+vuls_cache_dbpath: "{{ vuls_working_directory }}/cache.db"
+vuls_config_directory: "{{ vuls_working_directory }}"
+vuls_config_file: "{{ vuls_config_directory }}/config.toml"
+vuls_destination: "{{ go_src_path }}/github.com/future-architect/{{ vuls_package }}"
+
+vuls_go_exploitdb_always_update: true
+vuls_go_exploitdb_dbpath: "{{ vuls_working_directory }}/exploitdb.sqlite3"
+vuls_go_exploitdb_dbtype: "sqlite3"
+vuls_go_exploitdb_fetch:
+  - awesomepoc
+  - exploitdb
+  - githubrepos
+vuls_go_exploitdb_log_dir: "{{ vuls_log_directory }}"
+
+vuls_gost_always_update: true
+vuls_gost_dbpath: "{{ vuls_working_directory }}/gost.sqlite3"
+vuls_gost_dbtype: "sqlite3"
+vuls_gost_fetch:
+  - debian
+  - redhat --after="2018-01-01"
+vuls_gost_log_dir: "{{ vuls_log_directory }}"
+
+vuls_goval_always_update: true
+vuls_goval_dbpath: "{{ vuls_working_directory }}/oval.sqlite3"
+vuls_goval_dbtype: "sqlite3"
+vuls_goval_fetch:
+  - type: alpine
+    versions: [ 3.3, 3.4, 3.5, 3.6, 3.7, 3.8, 3.9 ]
+  - type: amazon
+    versions: None
+  - type: debian
+    versions: [ 7, 8, 9, 10 ]
+  - type: oracle
+    versions: None
+  - type: redhat
+    versions: [ 5, 6, 7 ]
+  - type: ubuntu
+    versions: [ 12, 14, 16, 18 ]
+vuls_goval_log_dir: "{{ vuls_log_directory }}"
+
+vuls_jvn_always_update: true
+vuls_jvn_dbpath: "{{ vuls_working_directory }}/cve.sqlite3"
+vuls_jvn_dbtype: "sqlite3"
+vuls_jvn_log_dir: "{{ vuls_log_directory }}"
+vuls_jvn_time_period: "-last2y"
+
+vuls_log_directory: "/var/log/vuls"
+
+vuls_nvd_always_update: true
+vuls_nvd_dbpath: "{{ vuls_working_directory }}/cve.sqlite3"
+vuls_nvd_dbtype: "sqlite3"
+vuls_nvd_log_dir: "{{ vuls_log_directory }}"
+vuls_nvd_time_period: "-last2y"
+
+vuls_package: "vuls"
+
+vuls_repository: "https://github.com/future-architect/{{ vuls_package }}.git"
+vuls_required_packages:
+  - name: "debian-goodies"
+    version: "latest"
+vuls_results_directory: "{{ vuls_working_directory }}/results"
+vuls_scan_mode: [ "offline", "fast-root" ]
+
+vuls_version: "0.6.3"
+
+vuls_working_directory: "/opt/vuls"

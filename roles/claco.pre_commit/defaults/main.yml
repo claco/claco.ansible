@@ -1,0 +1,7 @@
+---
+# defaults file for claco.pre_commit
+
+pre_commit_package_name: "pre-commit"
+pre_commit_package_version: "latest"
+
+pre_commit_virtualenv: "{{ pip_virtualenv }}"

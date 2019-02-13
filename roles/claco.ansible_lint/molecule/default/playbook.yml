@@ -1,0 +1,8 @@
+---
+# molecule file for claco.ansible_lint
+
+- name: Converge
+  hosts: all
+  roles:
+    - role: claco.ansible_lint
+      ansible_lint_virtualenv: "~/.venv"

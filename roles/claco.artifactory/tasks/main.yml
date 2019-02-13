@@ -1,0 +1,109 @@
+---
+# tasks file for claco.artifactory
+
+- name: Include Operating System Variables
+  include_vars: "{{ item }}"
+  with_first_found:
+    - files:
+        - "{{ ansible_distribution | lower }}-{{ ansible_distribution_version | lower }}.yml"
+        - "{{ ansible_distribution | lower }}-{{ ansible_distribution_major_version | lower }}.yml"
+        - "{{ ansible_os_family | lower }}-{{ ansible_distribution_major_version | lower }}.yml"
+        - "{{ ansible_system | lower }}-{{ ansible_distribution_version | lower }}.yml"
+        - "{{ ansible_distribution | lower }}.yml"
+        - "{{ ansible_os_family | lower }}.yml"
+        - "{{ ansible_system | lower }}.yml"
+        - "main.yml"
+      paths:
+        - "{{ role_path }}/vars"
+
+- name: Include Operating System Specific Tasks
+  include_tasks: "{{ item }}"
+  with_first_found:
+    - files:
+        - "{{ ansible_distribution | lower }}-{{ ansible_distribution_version | lower }}.yml"
+        - "{{ ansible_distribution | lower }}-{{ ansible_distribution_major_version | lower }}.yml"
+        - "{{ ansible_os_family | lower }}-{{ ansible_distribution_major_version | lower }}.yml"
+        - "{{ ansible_system | lower }}-{{ ansible_distribution_version | lower }}.yml"
+        - "{{ ansible_distribution | lower }}.yml"
+        - "{{ ansible_os_family | lower }}.yml"
+        - "{{ ansible_system | lower }}.yml"
+      paths:
+        - "{{ role_path }}/tasks"
+
+- name: Create Artifactory Group {{ artifactory_group_name }}:{{ artifactory_group_id }}
+  become: true
+  group:
+    name: "{{ artifactory_group_name }}"
+    gid: "{{ artifactory_group_id }}"
+    state: present
+
+- name: Create Artifactory User {{ artifactory_user_name }}:{{ artifactory_group_id }}
+  become: true
+  user:
+    name: "{{ artifactory_user_name }}"
+    uid: "{{ artifactory_user_id }}"
+    group: "{{ artifactory_group_name }}"
+    state: present
+
+- name: Create Artifactory Data Directory {{ artifactory_data_directory }}
+  become: true
+  file:
+    path: "{{ artifactory_data_directory }}"
+    owner: "{{ artifactory_user_name }}"
+    group: "{{ artifactory_group_name }}"
+    mode: "0755"
+    state: directory
+
+- name: Create Artifactory Configuration Directory {{ artifactory_etc_directory }}
+  become: true
+  file:
+    path: "{{ artifactory_etc_directory }}"
+    owner: "{{ artifactory_user_name }}"
+    group: "{{ artifactory_group_name }}"
+    mode: "0755"
+    state: directory
+
+- name: Check for Existing Configuration Boostrap
+  become: true
+  stat:
+    path: "{{ artifactory_etc_directory }}/artifactory.config.bootstrap.xml"
+  changed_when: false
+  register: processed_bootstrap_file
+
+- name: Create Artifactory Configuration Bootstrap
+  become: true
+  template:
+    src: "artifactory.config.xml.j2"
+    dest: "{{ artifactory_etc_directory }}/artifactory.config.xml"
+    owner: "{{ artifactory_user_name }}"
+    group: "{{ artifactory_group_name }}"
+    mode: "0755"
+  when: not processed_bootstrap_file.stat.exists
+
+- name: Pull Artifactory Docker Image {{ artifactory_image }}
+  docker_image:
+    name: "{{ artifactory_image }}"
+    source: pull
+    state: present
+
+- name: Create Artifactory Network {{ artifactory_network }}
+  docker_network:
+    name: "{{ artifactory_network }}"
+    state: present
+
+- name: Start Artifactory Docker Container
+  docker_container:
+    name: "artifactory"
+    image: "{{ artifactory_image }}"
+    auto_remove: true
+    hostname: "artifactory"
+    purge_networks: true
+    networks_cli_compatible: true
+    networks:
+      - name: "{{ artifactory_network }}"
+    ports:
+      - "{{ artifactory_port }}:8081"
+    volumes:
+      - "{{ artifactory_data_directory }}:/var/opt/jfrog/artifactory"
+    user: "{{ artifactory_user_id }}:{{ artifactory_group_id }}"
+    state: started

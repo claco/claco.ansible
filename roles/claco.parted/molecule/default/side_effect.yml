@@ -1,0 +1,5 @@
+---
+# molecule file for claco.parted
+
+- name: Side Effects
+  hosts: all

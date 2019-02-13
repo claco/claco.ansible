@@ -1,0 +1,7 @@
+---
+# defaults file for claco.pip
+
+pip_config_directory: "~/.pip"
+pip_package_name: "pip"
+pip_package_version: "latest"
+pip_virtualenv: "{{ pip_virtualenv }}"

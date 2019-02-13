@@ -1,0 +1,5 @@
+---
+# defaults file for claco.parted
+
+parted_package_name: "parted"
+parted_package_version: "latest"

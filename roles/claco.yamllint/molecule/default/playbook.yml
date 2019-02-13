@@ -1,0 +1,8 @@
+---
+# molecule file for claco.yamllint
+
+- name: Converge
+  hosts: all
+  roles:
+    - role: claco.yamllint
+      yamllint_virtualenv: "~/.venv"

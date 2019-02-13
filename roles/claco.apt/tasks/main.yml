@@ -1,0 +1,63 @@
+---
+# tasks file for claco.apt
+
+- name: Include Operating System Variables
+  include_vars: "{{ item }}"
+  with_first_found:
+    - files:
+        - "{{ ansible_distribution | lower }}-{{ ansible_distribution_version | lower }}.yml"
+        - "{{ ansible_distribution | lower }}-{{ ansible_distribution_major_version | lower }}.yml"
+        - "{{ ansible_os_family | lower }}-{{ ansible_distribution_major_version | lower }}.yml"
+        - "{{ ansible_system | lower }}-{{ ansible_distribution_version | lower }}.yml"
+        - "{{ ansible_distribution | lower }}.yml"
+        - "{{ ansible_os_family | lower }}.yml"
+        - "{{ ansible_system | lower }}.yml"
+        - "main.yml"
+      paths:
+        - "{{ role_path }}/vars"
+
+- name: Update Repositories
+  apt:
+    cache_valid_time: "{{ apt_cache_valid_time }}"
+    force_apt_get: true
+    update_cache: true
+  become: true
+  tags: apt-update
+
+- name: Upgrade Installed Packages
+  apt:
+    force_apt_get: true
+    upgrade: dist
+  become: true
+  tags: apt-dist-upgrade
+
+- name: Clean/Remove Unnecessary Files
+  apt:
+    autoclean: true
+    autoremove: true
+    force_apt_get: true
+  become: true
+  tags: apt-clean
+
+- name: Reboot To Complete Upgrades
+  reboot:
+    msg: "Rebooting system to complete upgrades"
+  when: apt_reboot
+  become: true
+  tags:
+    - apt-reboot
+    - skip_ansible_lint  # See https://github.com/ansible/ansible-lint/issues/396
+
+- name: Include Operating System Specific Tasks
+  include_tasks: "{{ item }}"
+  with_first_found:
+    - files:
+        - "{{ ansible_distribution | lower }}-{{ ansible_distribution_version | lower }}.yml"
+        - "{{ ansible_distribution | lower }}-{{ ansible_distribution_major_version | lower }}.yml"
+        - "{{ ansible_os_family | lower }}-{{ ansible_distribution_major_version | lower }}.yml"
+        - "{{ ansible_system | lower }}-{{ ansible_distribution_version | lower }}.yml"
+        - "{{ ansible_distribution | lower }}.yml"
+        - "{{ ansible_os_family | lower }}.yml"
+        - "{{ ansible_system | lower }}.yml"
+      paths:
+        - "{{ role_path }}/tasks"

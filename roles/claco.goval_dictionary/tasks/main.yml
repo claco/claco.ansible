@@ -1,0 +1,50 @@
+---
+# tasks file for claco.goval_dictionary
+
+- name: Include Operating System Specific Variables
+  include_vars: "{{ item }}"
+  with_first_found:
+    - files:
+        - "{{ ansible_distribution | lower }}-{{ ansible_distribution_version | lower }}.yml"
+        - "{{ ansible_distribution | lower }}-{{ ansible_distribution_major_version | lower }}.yml"
+        - "{{ ansible_os_family | lower }}-{{ ansible_distribution_major_version | lower }}.yml"
+        - "{{ ansible_system | lower }}-{{ ansible_distribution_version | lower }}.yml"
+        - "{{ ansible_distribution | lower }}.yml"
+        - "{{ ansible_os_family | lower }}.yml"
+        - "{{ ansible_system | lower }}.yml"
+        - "main.yml"
+      paths:
+        - "vars"
+
+- name: Download Goval Dictionary Source
+  git:
+    repo: "{{ goval_dictionary_repository }}"
+    dest: "{{ goval_dictionary_destination }}"
+    version: "v{{ goval_dictionary_version }}"
+    update: false
+    force: true
+
+- name: Compile Goval Dictionary
+  command: make install
+  args:
+    chdir: "{{ goval_dictionary_destination }}"
+    creates: "{{ goval_dictionary_binary }}"
+    warn: false
+  environment:
+    GOPATH: "{{ go_path }}"
+    PATH: "{{ ansible_env.PATH }}:{{ go_bin_path }}"
+
+- name: Include Operating System Specific Tasks
+  include_tasks: "{{ item }}"
+  with_first_found:
+    - files:
+        - "{{ ansible_distribution | lower }}-{{ ansible_distribution_version | lower }}.yml"
+        - "{{ ansible_distribution | lower }}-{{ ansible_distribution_major_version | lower }}.yml"
+        - "{{ ansible_os_family | lower }}-{{ ansible_distribution_major_version | lower }}.yml"
+        - "{{ ansible_system | lower }}-{{ ansible_distribution_version | lower }}.yml"
+        - "{{ ansible_distribution | lower }}.yml"
+        - "{{ ansible_os_family | lower }}.yml"
+        - "{{ ansible_system | lower }}.yml"
+      paths:
+        - "tasks"
+      skip: true

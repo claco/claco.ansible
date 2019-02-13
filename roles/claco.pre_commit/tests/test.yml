@@ -1,0 +1,7 @@
+---
+# tests file for claco.pre_commit
+
+- hosts: localhost
+  remote_user: root
+  roles:
+    - claco.pre_commit

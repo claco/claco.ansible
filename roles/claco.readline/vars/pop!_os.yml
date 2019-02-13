@@ -1,0 +1,5 @@
+---
+# vars file for claco.readline
+
+readline_required_packages:
+  - "readline-common"

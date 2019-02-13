@@ -1,0 +1,4 @@
+---
+# defaults file for claco.format_disk
+format_disk_device:
+format_disk_label:

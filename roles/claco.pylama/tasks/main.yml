@@ -1,0 +1,44 @@
+---
+# tasks file for claco.pylama
+
+- name: Include Operating System Specific Variables
+  include_vars: "{{ item }}"
+  with_first_found:
+    - files:
+        - "{{ ansible_distribution | lower }}-{{ ansible_distribution_version | lower }}.yml"
+        - "{{ ansible_distribution | lower }}-{{ ansible_distribution_major_version | lower }}.yml"
+        - "{{ ansible_os_family | lower }}-{{ ansible_distribution_major_version | lower }}.yml"
+        - "{{ ansible_system | lower }}-{{ ansible_distribution_version | lower }}.yml"
+        - "{{ ansible_distribution | lower }}.yml"
+        - "{{ ansible_os_family | lower }}.yml"
+        - "{{ ansible_system | lower }}.yml"
+        - "main.yml"
+      paths:
+        - "{{ role_path }}/vars"
+
+- name: Install/Update Package {{ pylama_package_name }}:{{ pylama_package_version }}
+  pip:
+    name: "{{ pylama_package_name }}{% if pylama_package_version != 'latest' %}=={{ pylama_package_version }}{% endif %}"
+    state: "{% if pylama_package_version == 'latest' %}latest{% else %}present{% endif %}"
+    virtualenv: "{{ pylama_virtualenv }}"
+
+- name: Install/Update PyLama Plugins
+  pip:
+    name: "{{ item.name }}{% if item.version != 'latest' %}=={{ item.version }}{% endif %}"
+    state: "{% if item.version == 'latest' %}latest{% else %}present{% endif %}"
+    virtualenv: "{{ pylama_virtualenv }}"
+  loop: "{{ pylama_package_plugins }}"
+
+- name: Include Operating System Specific Tasks
+  include_tasks: "{{ item }}"
+  with_first_found:
+    - files:
+        - "{{ ansible_distribution | lower }}-{{ ansible_distribution_version | lower }}.yml"
+        - "{{ ansible_distribution | lower }}-{{ ansible_distribution_major_version | lower }}.yml"
+        - "{{ ansible_os_family | lower }}-{{ ansible_distribution_major_version | lower }}.yml"
+        - "{{ ansible_system | lower }}-{{ ansible_distribution_version | lower }}.yml"
+        - "{{ ansible_distribution | lower }}.yml"
+        - "{{ ansible_os_family | lower }}.yml"
+        - "{{ ansible_system | lower }}.yml"
+      paths:
+        - "{{ role_path }}/tasks"

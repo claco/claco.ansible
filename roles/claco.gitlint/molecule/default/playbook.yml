@@ -1,0 +1,8 @@
+---
+# molecule file for claco.gitlint
+
+- name: Converge
+  hosts: all
+  roles:
+    - role: claco.gitlint
+      gitlint_virtualenv: "~/.venv"

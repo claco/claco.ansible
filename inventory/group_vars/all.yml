@@ -1,0 +1,5 @@
+---
+# variables for all hosts
+
+docker_network_name: "builds"
+pip_virtualenv: "{{ lookup('env', 'PWD') }}/.venv"

@@ -1,0 +1,31 @@
+package(default_visibility = ["//visibility:public"])
+
+load("@bazel_tools//tools/build_defs/pkg:pkg.bzl", "pkg_tar")
+
+pkg_tar(
+  name = "ansible_config",
+  extension = "tar.gz",
+  package_dir = "/workspace",
+  srcs = [
+    ".ansible-lint",
+    "ansible.cfg"
+  ]
+)
+
+pkg_tar(
+  name = "gitlint_config",
+  extension = "tar.gz",
+  package_dir = "/workspace",
+  srcs = [
+    ".gitlint"
+  ]
+)
+
+pkg_tar(
+  name = "yamllint_config",
+  extension = "tar.gz",
+  package_dir = "/workspace",
+  srcs = [
+    ".yamllint"
+  ]
+)

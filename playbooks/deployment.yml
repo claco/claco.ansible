@@ -1,0 +1,32 @@
+---
+# playbook to install repository deployment requirements
+
+- name: Install Repository Deployment Requirements
+  hosts: localhost
+  roles:
+    - role: claco.artifactory
+      tags: artifactory
+
+    - role: claco.docker_registry
+      tags: docker-registry
+
+    - role: claco.teamcity_server
+      tags: teamcity-server
+
+    - role: claco.teamcity_build_agent
+      tags: teamcity-build-agent
+      vars:
+        teamcity_build_agent_number: 1
+        teamcity_build_agent_config_directory: "/data/teamcity_build_agent_1/conf"
+
+    - role: claco.teamcity_build_agent
+      tags: teamcity-build-agent
+      vars:
+        teamcity_build_agent_number: 2
+        teamcity_build_agent_config_directory: "/data/teamcity_build_agent_2/conf"
+
+    - role: claco.teamcity_build_agent
+      tags: teamcity-build-agent
+      vars:
+        teamcity_build_agent_number: 3
+        teamcity_build_agent_config_directory: "/data/teamcity_build_agent_3/conf"

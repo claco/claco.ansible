@@ -1,0 +1,14 @@
+---
+# defaults file for claco.artifactory
+
+artifactory_data_directory:
+artifactory_edition: "oss"
+artifactory_etc_directory: "{{ artifactory_data_directory }}/etc"
+artifactory_group_id: "{{ artifactory_user_id }}"
+artifactory_group_name: "{{ artifactory_user_name }}"
+artifactory_image: "docker.bintray.io/jfrog/artifactory-{{ artifactory_edition }}:{{ artifactory_version }}"
+artifactory_network: "{{ docker_network_name }}"
+artifactory_port: 8081
+artifactory_user_id: 1030
+artifactory_user_name: "artifactory"
+artifactory_version: "latest"

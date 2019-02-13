@@ -1,0 +1,5 @@
+---
+# vars file for claco.packer
+
+packer_download_checksum: "sha256:c89367c7ccb50ca3fa10129bbbe89273fba0fa6a75b44e07692a32f92b1cbf55"
+packer_package_platform: "linux_amd64"
